@@ -46,14 +46,14 @@ public class DatabaseAccess extends HttpServlet{
       response.setContentType("text/html");
       PrintWriter out = response.getWriter();
       String title = "Database Result";
-      String docType =
-        "<!doctype html public \"-//w3c//dtd html 4.0 " +
-         "transitional//en\">\n";
-         out.println(docType +
-         "<html>\n" +
-         "<head><title>" + title + "</title></head>\n" +
-         "<body bgcolor=\"#f0f0f0\">\n" +
-         "<h1 align=\"center\">" + title + "</h1>\n");
+//      String docType =
+//        "<!doctype html public \"-//w3c//dtd html 4.0 " +
+//         "transitional//en\">\n";
+//         out.println(docType +
+//         "<html>\n" +
+//         "<head><title>" + title + "</title></head>\n" +
+//         "<body bgcolor=\"#f0f0f0\">\n" +
+//         "<h1 align=\"center\">" + title + "</h1>\n");
       try{
          // Register JDBC driver
          Class.forName("com.mysql.jdbc.Driver");
@@ -66,6 +66,8 @@ public class DatabaseAccess extends HttpServlet{
          String sql;
          sql = "SELECT id, first, last, age FROM Employees";
          ResultSet rs = stmt.executeQuery(sql);
+         int counter = 0;
+         out.println("{ \"contacts\":[");
 
          // Extract data from result set
          while(rs.next()){
@@ -76,12 +78,19 @@ public class DatabaseAccess extends HttpServlet{
             String last = rs.getString("last");
 
             //Display values
-            out.println("ID: " + id + " ");
-            out.println(", Age: " + age + " ");
-            out.println(", First: " + first + " ");
-            out.println(", Last: " + last + "<br>");
+            out.println("{");
+            out.println("\"id\": " + id + " ");
+            out.println(", \"first\": \"" + first + "\" ");
+            out.println(", \"last\": \"" + last + "\"");
+            out.println(", \"age\": " + age + " ");
+            out.println("}");
+            if(counter<3){
+                out.println(",");
+                counter+=1;
+            }
          }
-         out.println("</body></html>");
+//         out.println("</body></html>");
+         out.println("]}");
 
          // Clean-up environment
          rs.close();
